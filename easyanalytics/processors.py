@@ -1,0 +1,91 @@
+import pandas as pd
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+
+
+def process_csv(file):
+    """Process the uploaded csv file and return plotly plot
+    
+    Arguments:
+        file {file} -- Uploaded csv file
+            Date, Item, Cost
+    """
+    # read the file using pandas
+    if file.name.endswith('.csv'):
+        df = pd.read_csv(file)
+    elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
+        df = pd.read_excel(file)
+
+    # Get Figures
+    fig1 = priceOverTime(df)
+    fig2 = perItem(df)
+    fig3 = perMonth(df)
+    fig4 = totalSales(df)
+    plot_div = formatPlots([fig1,fig2,fig3, fig4], title = "Transaction Analysis")
+    # plot_div = fig.to_html(full_html=False)
+    return plot_div
+
+
+def priceOverTime(df):
+    """Create a line chart showing the price over time"""
+    # create a line chart
+    data = [go.Scatter(x=df['Date'], y=df['Cost'])]
+    layout = go.Layout(title='Price Over Time', xaxis=dict(type='date'), yaxis={'title': 'Cost'})
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+# create a bar chart showing the amount spent on each item
+def perItem(df):
+    """Create a bar chart showing the amount spent on each item"""
+    # create a new dataframe with the sum of the cost for each item
+    df2 = df.groupby('Item').sum()
+    # create a bar chart
+    data = [go.Bar(x=df2.index, y=df2['Cost'])]
+    # add x and y axis titles
+    layout = go.Layout(title='Total Cost per Item', xaxis={'title': 'Item'}, yaxis={'title': 'Total Amount'})
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+def perMonth(df):
+    """Create a bar chart showing the amount spent per month"""
+    # convert the date column to datetime
+    df['Month']=pd.to_datetime(df["Date"]).dt.month
+    # create a new dataframe with the sum of the cost for each month
+    df = df.groupby('Month').sum()
+    # create a bar chart
+    data = [go.Bar(x=df.index, y=df['Cost'])]
+    layout = go.Layout(title='Total Cost per Month', xaxis={'title': 'Month'}, yaxis={'title': 'Cost'})
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+def totalSales(df):
+    """Show the total sales as a number"""
+    # create a new dataframe with the sum of the cost for each month
+    total = df['Cost'].sum()
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=str(total), mode='text'))
+
+    fig.update_xaxes(showgrid=False, visible=False)
+    fig.update_yaxes(showgrid=False, visible=False)
+    fig.update_layout(showlegend=False, font=dict(size=20), plot_bgcolor='white')
+
+    return fig
+
+def formatPlots(figures, title=None):
+    rows = int(len(figures) / 2) + 1 if len(figures) % 2 != 0 else int(len(figures) / 2)
+    fig = make_subplots(rows=rows, cols=2, vertical_spacing=0.3, horizontal_spacing=0.1)
+
+    for i, f in enumerate(figures, start=1):
+        row = int((i - 1) / 2) + 1
+        col = i % 2 if i % 2 != 0 else 2
+
+        for trace in f['data']:
+            fig.add_trace(trace, row=row, col=col)
+
+        fig.update_xaxes(title_text=f['layout']['xaxis']['title']['text'], row=row, col=col)
+        fig.update_yaxes(title_text=f['layout']['yaxis']['title']['text'], row=row, col=col)
+
+    fig.update_layout(showlegend=False, title=title)
+    html_str = fig.to_html(full_html=False, include_plotlyjs='cdn')
+    return html_str
