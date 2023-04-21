@@ -1,80 +1,109 @@
 {% extends "easyanalytics/base.html" %}
+
+
 {% block content %}
-
-    <!-- {% for post in posts %}
-    <article class="media content-section">
-        <div class="media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ post.author }}</a>
-            <small class="text-muted">{{ post.date_posted }}</small>
-          </div>
-          <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-          <p class="article-content">{{ post.content }}</p>
-        </div>
-      </article>
-    {% endfor %} -->
-
-    <h1>Easy Analytics</h1>
-    <p>Easy Analytics is a simple web application that allows you to track your website's visitors.</p>
-
-
+  <section class="hero">
     <div class="container">
-      {% if error_msg %}
-      <div class="alert alert-danger">{{ error_msg }}</div>
-      {% endif %}
-      <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="form-group">
-              <label for="file">Select file to upload:</label>
-              <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="file" name="file">
-                  <label class="custom-file-label" for="file"></label>
-              </div>
-          </div>
-          <button type="submit" class="btn btn-primary mt-3">Submit</button>
-      </form>
-
-<!-- Adding in First 5 Rows -->
-  <!-- {% if rows %}
-    <h3>First 5 Rows of Uploaded Data:</h3>
-    <table>
-      <thead>
-        <tr>
-          {% for column in rows.columns %}
-            <th>{{ column }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for _, row in rows.iterrows %}
-          <tr>
-            {% for _, value in row.iteritems %}
-              <td>{{ value }}</td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %} -->
-<!-- If plot then it shows it -->
-      {% if plot_div %}
-      <div class="mt-3">
-          {{ plot_div|safe }}
-          <button type="button" class="btn btn-danger mt-2" id="clear-plot-btn">Clear</button>
-        </div>
-        {% endif %}
-      
+      <h1>Welcome to Easy Analytics</h1>
+      <p>Quickly analyze your data with just a few clicks!</p>
+	  <p>Select Which type of analysis you would like to run</p>
     </div>
-    
-    {% block scripts %}
-    <script>
-    const clearPlotBtn = document.querySelector('#clear-plot-btn');
-    const plotContainer = document.querySelector('#plot-container');
+  </section>
 
-    clearPlotBtn.addEventListener('click', function () {
-        plotContainer.remove();
-    });
-    </script>
-    {% endblock %}
+  <section class="features">
+    <div class="container">
+      <h2>Features:</h2>
+	  <hr> <!-- Add horizontal line -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feature">
+            <i class="fa fa-line-chart fa-3x"></i>
+            <h3>Transactional Analytics</h3>
+            <p>Upload your transactional data and analyze it with our powerful tools.</p>
+            <a href="{% url 'easyanalytics-transactions' %}" class="btn btn-primary">Get Started</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature">
+            <i class="fa fa-bar-chart fa-3x"></i>
+            <h3>Financial Analytics</h3>
+            <p>Get insights into your financial data and optimize your strategy.</p>
+            <a href="{% url 'easyanalytics-financial' %}" class="btn btn-primary">Get Started</a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature">
+            <i class="fa fa-cogs fa-3x"></i>
+            <h3>Other Analytics</h3>
+            <p>This feature is still under development.</p>
+            <a href="{% url 'easyanalytics-other' %}" class="btn btn-primary disabled">Coming Soon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-{% endblock content %}
+  <section class="cta">
+    <div class="container">
+		<hr> <!-- Add horizontal line -->
+
+      <h2>Ready to get started?</h2>
+      <p>Sign up today and start analyzing your data with ease.</p>
+      <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Sign Up Now</a>
+    </div>
+  </section>
+{% endblock %}
+
+
+{% block extra_css %}
+	<style>
+		.btn {
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 4px;
+			text-align: center;
+			text-decoration: none;
+			color: #fff;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		
+		.btn-primary {
+			background-color: #007bff;
+			border: 1px solid #007bff;
+		}
+		
+		.btn-primary:hover {
+			background-color: #0062cc;
+			border: 1px solid #0062cc;
+		}
+		
+		.btn-secondary {
+			background-color: #6c757d;
+			border: 1px solid #6c757d;
+		}
+		
+		 .btn-secondary:hover {
+			background-color: #5a6268;
+			border: 1px solid #5a6268;
+		}
+		
+		.btn-info {
+			background-color: #17a2b8;
+			border: 1px solid #17a2b8;
+		}
+		
+		.btn-info:hover {
+			background-color: #117a8b;
+			border: 1px solid #117a8b;
+		}
+		.hr {
+			border: none;
+			height: 2px;
+			background-color: #ccc;
+			margin: 20px 0;
+			}
+	</style>
+{% endblock %}

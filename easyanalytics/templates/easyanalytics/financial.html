@@ -1,0 +1,92 @@
+{% extends "easyanalytics/base.html" %}
+
+
+{% block content %}
+  <div class="container mt-5">
+    <h1>Financial Analysis</h1>
+    <hr>
+    <p>Financial analysis is a crucial part of evaluating the health and performance of a company. By analyzing financial data such as income statements, balance sheets, and cash flow statements, businesses can gain valuable insights into their profitability, financial health, and risks.</p>
+    <p>Some common reasons to run financial analysis include:</p>
+    <ul>
+      <li>Measuring profitability</li>
+      <li>Evaluating financial health</li>
+      <li>Identifying financial risks</li>
+      <li>Comparing performance to competitors or industry benchmarks</li>
+    </ul>
+    
+    <h2>Common Columns for Financial Data</h2>
+    <hr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Column Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Date</td>
+          <td>The date of the financial transaction</td>
+        </tr>
+        <tr>
+          <td>Revenue</td>
+          <td>The total amount of revenue earned by the company during the transaction</td>
+        </tr>
+        <tr>
+          <td>Expenses</td>
+          <td>The total amount of expenses incurred by the company during the transaction</td>
+        </tr>
+        <tr>
+          <td>Profit</td>
+          <td>The difference between the revenue and expenses</td>
+        </tr>
+        <tr>
+          <td>Accounts Receivable</td>
+          <td>The amount of money owed to the company by its customers</td>
+        </tr>
+        <tr>
+          <td>Accounts Payable</td>
+          <td>The amount of money the company owes to its suppliers and vendors</td>
+        </tr>
+        <tr>
+          <td>Net Income</td>
+          <td>The company's total earnings, after all expenses have been deducted</td>
+        </tr>
+        <tr>
+          <td>Profit Margin</td>
+          <td>The percentage of revenue that is profit</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Please upload a financial data file that contains these common columns to analyze the financial health of your company.</p>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="file-upload">Upload File:</label>
+        <input type="file" class="form-control-file" id="file-upload" name="file">
+      </div>
+      <button type="submit" class="btn btn-primary">Generate Analysis</button>
+    </form>
+    <div class="additional-content">
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block extra_css %}
+	<style>
+    .additional-content {
+      height: 500px;
+      overflow-y: scroll;
+    }
+
+</style>
+{% endblock %}
+
+
+

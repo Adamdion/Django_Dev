@@ -8,61 +8,13 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 # Create your views here.
 def home(request):
     """Renders the home page."""
-    if request.method == 'POST' and request.FILES.get('file'):
-        # check if a file was uploaded
-        file = request.FILES['file']
-        # check if the file type is valid
-        if file.name.endswith('.csv') or file.name.endswith('.xls') or file.name.endswith('.xlsx'):
-            # process the file using the function in processors.py
-            plot_div = process_csv(file)
-            # generate the plot using the function in processors.py
-            # plot_div = generate_plot(data)
-        else:
-            # invalid file type
-            error_msg = 'Invalid file type. Please upload a CSV or Excel file.'
-            return render(request, 'home.html', {'error_msg': error_msg})
-    else:
-        # no file uploaded
-        plot_div = ''
-    return render(request, 'easyanalytics/home.html', context={'plot_div': plot_div,'posts': Post.objects.all()})
+    return render(request, 'easyanalytics/home.html', context={})
 
 def about(request):
     """Renders the about page."""
     return render(request, 'easyanalytics/about.html', {'title': 'About'})
 
 
-# def transactions(request):
-#     valid = False
-#     """Renders the transactions page."""
-#     # plot_div = ''
-#     if request.method == 'POST' and request.FILES.get('file'):
-#         # check if a file was uploaded
-#         file = request.FILES['file']
-#         # check if the file type is valid
-#         if file.name.endswith('.csv') or file.name.endswith('.xls') or file.name.endswith('.xlsx'):
-#             valid = True
-#     elif request.method == 'POST' and request.POST['start_date'] and request.POST['end_date']:
-#         # check if a file was uploaded
-#         start_date = request.POST['start_date']
-#         end_date = request.POST['end_date']
-#         # check if the file type is valid
-#         if start_date and end_date:
-#             valid = True
-#             # get the start and end dates from the form
-#             plot_div = process_csv(file,start_date=request.POST['start_date'],end_date=request.POST['end_date'])
-#             # generate the plot using the function in processors.py
-#             return render(request, 'easyanalytics/transactions.html', {'title': 'Transactions', 'valid': valid,'plot_div': plot_div,})
-
-#         else:
-#             # invalid file type
-#             error_msg = 'Invalid file type. Please upload a CSV or Excel file.'
-#             plot_div = ''
-#             return render(request, 'transactions.html', {'error_msg': error_msg})
-    
-#     else:
-#         # no file uploaded
-#         plot_div = ''
-#     return render(request, 'easyanalytics/transactions.html', {'title': 'Transactions', 'valid': valid,'plot_div': plot_div,})
 import pandas as pd
 
 def transactions(request):
@@ -91,6 +43,15 @@ def transactions(request):
     else:
         return render(request, 'easyanalytics/transactions.html')
         
+
+def financial(request):
+    # ...code for handling financial analytics page...
+    return render(request, 'easyanalytics/financial.html')
+
+def other(request):
+    # ...code for handling other analytics page...
+    return render(request, 'easyanalytics/other.html')
+
 
 from .processors import process_csv
 
