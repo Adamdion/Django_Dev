@@ -1,9 +1,10 @@
 import pandas as pd
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+import datetime
 
 
-def process_csv(file):
+def process_csv(file, start_date=datetime.date.today() - datetime.timedelta(days=365), end_date=datetime.date.today()):
     """Process the uploaded csv file and return plotly plot
     
     Arguments:
@@ -17,16 +18,16 @@ def process_csv(file):
         df = pd.read_excel(file)
 
     # Get Figures
-    fig1 = priceOverTime(df)
-    fig2 = perItem(df)
-    fig3 = perMonth(df)
-    fig4 = totalSales(df)
+    fig1 = priceOverTime(df, start_date, end_date)
+    fig2 = perItem(df, start_date, end_date)
+    fig3 = perMonth(df, start_date, end_date)
+    fig4 = totalSales(df, start_date, end_date)
     plot_div = formatPlots([fig1,fig2,fig3, fig4], title = "Transaction Analysis")
     # plot_div = fig.to_html(full_html=False)
     return plot_div
 
 
-def priceOverTime(df):
+def priceOverTime(df, start_date, end_date):
     """Create a line chart showing the price over time"""
     # create a line chart
     data = [go.Scatter(x=df['Date'], y=df['Cost'])]
@@ -35,7 +36,7 @@ def priceOverTime(df):
     return fig
 
 # create a bar chart showing the amount spent on each item
-def perItem(df):
+def perItem(df, start_date, end_date):
     """Create a bar chart showing the amount spent on each item"""
     # create a new dataframe with the sum of the cost for each item
     df2 = df.groupby('Item').sum()
@@ -46,7 +47,7 @@ def perItem(df):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-def perMonth(df):
+def perMonth(df, start_date, end_date):
     """Create a bar chart showing the amount spent per month"""
     # convert the date column to datetime
     df['Month']=pd.to_datetime(df["Date"]).dt.month
@@ -58,7 +59,7 @@ def perMonth(df):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-def totalSales(df):
+def totalSales(df, start_date, end_date):
     """Show the total sales as a number"""
     # create a new dataframe with the sum of the cost for each month
     total = df['Cost'].sum()

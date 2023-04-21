@@ -22,7 +22,18 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
           <div class="container">
-            <a class="navbar-brand mr-4" href="/">Easy Analytics</a>
+            <!-- add logo as a circle in the top left -->
+            <style>
+              .logo {
+                border-radius: 50%; /* make the image circular */
+                width: 50px; /* set the desired width of the image */
+                height: 50px; /* set the desired height of the image */
+                object-fit: cover; /* ensure the entire image is visible within the circular container */
+                object-position: center; /* center the image within the container */
+              }
+            </style>
+            <img src="{% static 'easyanalytics\analytics.jpg' %}" alt="My App Logo" class="logo"> 
+            <a class="navbar-brand mr-4" href="/" >Easy Analytics</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
