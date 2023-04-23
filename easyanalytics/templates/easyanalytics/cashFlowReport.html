@@ -1,0 +1,62 @@
+{% extends "easyanalytics/base.html" %}
+{% block content %}
+
+  
+
+  <div class="container-fluid mt-3">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            Sales Growth
+          </div>
+          <div class="card-body">
+            <div class="chart">
+              {{ line_chart|safe }}
+            </div>
+            <p class="mt-3">Sales have grown by {{ growth_percentage }}% from last year to this year.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            Additional Graphs
+          </div>
+          <div class="card-body">
+            <div class="chart">
+              {{ growth_chart|safe }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+
+  <div class="mt-3">
+      {{ plot1|safe }}
+    
+    </div>
+    <!-- <div class="mt-3">
+        {{ plot2|safe }}
+        <h2>Works</h2>
+      </div> -->
+
+
+{% endblock %}
+
+
+{% block extra_css %}
+	<style>
+    .additional-content {
+      height: 500px;
+      overflow-y: scroll;
+    }
+
+</style>
+{% endblock %}
+
+
+
