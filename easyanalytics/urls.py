@@ -6,6 +6,7 @@ urlpatterns = [
     path('about/', views.about, name='easyanalytics-about'),
     path('transactions/', views.transactions, name='easyanalytics-transactions'),
     path('financial/', views.financial, name='easyanalytics-financial'),
-    path('cashFlowReport/', views.cashFlowReport, name='easyanalytics-cashFlowReport'),
+    path('grossProfitMargin/', views.grossProfitMargin, name='easyanalytics-grossProfitMargin'),
+    path('salesByProduct/', views.salesByProduct, name='easyanalytics-salesByProduct'),
     path('other/', views.other, name='easyanalytics-other'),
 ]

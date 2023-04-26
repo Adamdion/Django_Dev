@@ -1,0 +1,27 @@
+{% extends "easyanalytics/base.html" %}
+
+
+{% block content %}
+<html>
+<head>
+	<title>Sales By Product</title>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+	<h1>Sales By Product</h1>
+
+
+    <div class="chart">
+        {{ plots|safe }}
+      </div>
+
+    <div class="table">
+        {{ table|safe }}
+	
+	</script>
+
+</body>
+</html>
+
+{% endblock %}

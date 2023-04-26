@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import Post
 from django.core.files.storage import FileSystemStorage
 from .transactionsProcessing import process_csv
-from .financialProcessing import financialProcessing, CashFlowReport, salesByProductReport
+from .financialProcessing import financialProcessing, GrossProfitMargin, salesByProductReport
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse
@@ -39,18 +39,6 @@ def transactions(request):
         return render(request, 'easyanalytics/transactions.html')
         
 
-# def financial(request):
-#     """Renders the financial page."""
-#     if request.method == 'POST':
-#         try:
-#             file = request.FILES['file']
-#         except Exception as e:
-#             return render(request, 'easyanalytics/transactions.html', {'error': 'No file selected'})
-
-#         line_chart, growth_percentage, growth_chart = financialProcessing(file)
-#         return render(request, 'easyanalytics/financial.html', {'line_chart': line_chart, 'growth_percentage': growth_percentage, 'growth_chart': growth_chart})
-#     else: 
-#         return render(request, 'easyanalytics/financial.html')
 
 def financial(request):
     uploaded = False
@@ -60,22 +48,19 @@ def financial(request):
         uploaded = True
         # Process the file here, e.g. save to disk, read data into DataFrame
         
-        if 'cashflow' in request.POST:
+        if 'grossProfitMargin' in request.POST:
             # Render the template for cash flow report with report data
-            plot1 = CashFlowReport(file)
-            print("Got to the cashflow report")
+            plot1, profit_total_change = GrossProfitMargin(file)
             request.session['plot1'] = plot1
-            # request.session['plot1'] = plot2
-
-            return redirect('easyanalytics-cashFlowReport')
+            request.session['profit_total_change'] = profit_total_change
+            return redirect('easyanalytics-grossProfitMargin')
         
-        elif 'sales_by_product' in request.POST:
+        elif 'salesByProduct' in request.POST:
             # Call the sales by product report function and pass in the DataFrame
             report_data = salesByProductReport(file)
-            
-            # Render the template for sales by product report with report data
+            request.session['report_data'] = report_data
+            return redirect('easyanalytics-salesByProduct')
            
-            return render(request, 'easyanalytics/sales_by_product_report.html', {'report_data': report_data})
         
         elif 'other_report' in request.POST:
             # Call another report function and pass in the DataFrame
@@ -88,28 +73,42 @@ def financial(request):
     return   render(request, 'easyanalytics/financial.html', {'uploaded': uploaded})
 
 
+def salesByProduct(request):
+    """Renders the sales_by_product page."""
+    # Get the report data from the session
+    report_data = request.session.get('report_data')
+    plot = report_data[0]
+    fig_dict1 = json.loads(plot)
+    plot = go.Figure(fig_dict1)
+    plots = plot.to_html(full_html=False)
+
+    table = report_data[1]
+    fig_dict1 = json.loads(table)
+    table = go.Figure(fig_dict1)
+    table = table.to_html(full_html=False)
+    return render(request, 'easyanalytics/salesByProduct.html', context={'plots': plots, 'table': table})
+
 
 def other(request):
     return render(request, 'easyanalytics/other.html')
 
 import plotly.graph_objs as go
 import json
-def cashFlowReport(request):
-    """Renders the cashFlowReport page."""
+def grossProfitMargin(request):
+    print("GOT TO FUNCTION")
+    """Renders the grossProfitMargin page."""
     # Get the plotly figure from the session
     plot1 = request.session.get('plot1')
+    profit_total_change = request.session.get('profit_total_change')
+    print(f"PROFIT TOTAL CHANGE: {profit_total_change}")
     # plot2 = request.session.get('plot2')
 
     # Convert the plotly figure to JSON
     fig_dict1 = json.loads(plot1)
-    # fig_dict2 = json.loads(plot2)
-
     plot1 = go.Figure(fig_dict1)
-    # plot2 = go.Figure(fig_dict2)
     plot1 = plot1.to_html(full_html=False)
-    # plot2 = plot2.to_html(full_html=False)
 
-    return render(request, 'easyanalytics/cashFlowReport.html', {'plot1': plot1})
+    return render(request, 'easyanalytics/grossProfitMargin.html', {'plot1': plot1, 'profit_total_change': profit_total_change})
 
 
 

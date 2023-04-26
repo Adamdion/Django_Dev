@@ -88,82 +88,78 @@ def growthChart(df):
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
-from plotly.offline import plot
+
 import plotly.io as pio
 
-def CashFlowReport(file):
+def GrossProfitMargin(file):
     """Generate a cash flow report."""
     # read the file using pandas
     if file.name.endswith('.csv'):
         df = pd.read_csv(file)
     elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
         df = pd.read_excel(file)
-    # Convert the data to a pandas DataFrame
-    # df = pd.DataFrame(data, columns=["Date", "Sales", "Expenses", "Profit"])
-    
-    # # Convert the Date column to a datetime data type
-    df["Date"] = pd.to_datetime(df["Date"])
-    df['Month']=pd.to_datetime(df["Date"]).dt.month
-    # # Calculate the monthly cash flow
-    # cash_flow = df.groupby(pd.Grouper(key="Date", freq="M")).sum()
-    cash_flow = df.groupby(pd.Grouper(key="Month"))#.sum()
 
-    # # Calculate the monthly net cash flow (Sales - Expenses)
-    # net_cash_flow = cash_flow["Sales"] - cash_flow["Expenses"]
+     # Calculate gross profit margin
+    df['gross_profit_margin'] = (df['Revenue'] - df['Expenses']) / df['Revenue']
 
-    # # Calculate the cumulative net cash flow
-    # cumulative_net_cash_flow = net_cash_flow.cumsum()
+    # Create plotly line chart
+    fig = go.Figure()
 
-    # # Calculate the percentage growth in net cash flow
-    # pct_growth = cumulative_net_cash_flow.pct_change()
-
-    # # Create a line chart of the monthly net cash flow with percentage growth
-    # # make with go 
-    # fig = go.Line(cumulative_net_cash_flow, title="Monthly Net Cash Flow with Percentage Growth")
-    # fig = go.Scatter(pct_growth.index, pct_growth * 100, name="% Growth")
-    # fig = go.Figure(data=fig)
-    # fig2 = fig.to_json()
-
-    # # Create a bar chart of the monthly sales and expenses
-    # fig2 = [go.Bar(cash_flow, x=df['Date'], y=["Sales", "Expenses"], title="Monthly Sales and Expenses")]
-    # fog2 = go.Bar({x=df['Date'], y=["Sales", "Expenses"], title="Monthly Sales and Expenses"})
-    # fig2 = go.Figure(data=fig2)
-    # fig2 = fig2.to_json()
-    # Create a scatter plot of profit vs sales
-    print("GETTOMG TP HERE")
-    data = [go.Scatter(x=df['Sales'], y=df['Profit'])]
-    print("GOT DATA")
-    layout = go.Layout(title="Profit vs Sales", xaxis_title="Sales", yaxis_title="Profit")
-    print("GOT layout")
-
-    fig3 = go.Figure(data=data, layout=layout)
-    fig3 = fig3.to_json()
+    fig.add_trace(go.Scatter(x=df['Date'], y=df['gross_profit_margin'],
+                        mode='lines', name='Gross Profit Margin'))
+    fig.update_layout(title='Gross Profit Margin Over Time', xaxis_title='Date',
+                      yaxis_title='Gross Profit Margin')
+    fig = fig.to_json()
   
+    # Calculate total change over the year for revenue, expenses, and profit
 
-    return fig3
+    profit_initial = df.loc[0, 'Profit']
+    profit_final = df.loc[len(df)-1, 'Profit']
+    profit_total_change = (profit_final - profit_initial) / profit_initial
+   
+
+    return fig, profit_total_change
 
 
-def salesByProductReport(df):
+def salesByProductReport(file):
+    if file.name.endswith('.csv'):
+        df = pd.read_csv(file)
+    elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
+        df = pd.read_excel(file)
     # Calculate total sales by product
-    sales_by_product = df.groupby('Product')['Sales'].sum().reset_index()
+    sales_by_product = df.groupby(df.iloc[:, 4])['Revenue'].sum().reset_index()
 
-    # Create a pie chart of sales by product
-    fig_pie = px.pie(sales_by_product, values='Sales', names='Product', title='Sales by Product')
+
+    # remake but use go instead of px
+    # fig = go.Figure()
+    # fig.add_trace(go.Pie(labels=sales_by_product.iloc[:,0], values=sales_by_product['Sales'])) 
+    # fig.update_layout(title='Sales by Product')
 
     # Create a bar chart of sales by product
-    fig_bar = px.bar(sales_by_product, x='Product', y='Sales', title='Sales by Product')
+    fig_bar = go.Figure()
+    fig_bar.add_trace(go.Bar(x=sales_by_product.iloc[:,0], y=sales_by_product.iloc[:,1]))
+    fig_bar.update_layout(title='Sales by Product', xaxis_title='Product', yaxis_title='Revenue')
+    # make plot look nicer
+    fig_bar.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)', 
+                    marker_line_width=1.5, opacity=0.6)
+                               
 
     # Calculate percentage of sales by product
-    total_sales = df['Sales'].sum()
-    sales_by_product['Percent'] = (sales_by_product['Sales'] / total_sales) * 100
+    # total_sales = df['Sales'].sum()
+    # sales_by_product['Percent'] = (sales_by_product['Sales'] / total_sales) * 100
 
     # Create a table of sales by product
-    fig_table = px.table(sales_by_product, title='Sales by Product', height=250)
-
+    # fig_table = px.table(sales_by_product, title='Sales by Product', height=250)
+    # write table using go
+    fig_table = go.Figure(data=[go.Table(header=dict(values=list(sales_by_product.columns)),
+                    cells=dict(values=[sales_by_product.iloc[:,0], sales_by_product.iloc[:,1]]))])
+    fig_table.update_layout(title='Sales by Product')
+    
     # Return the figures as a dictionary
-    figures = {'fig_pie': fig_pie, 'fig_bar': fig_bar, 'fig_table': fig_table}
+    # figures = {'fig_pie': fig_pie, 'fig_bar': fig_bar, 'fig_table': fig_table}
 
-    return figures
+    return [fig_bar.to_json(), fig_table.to_json()]
+
 
 
 def formatPlots(figures, title=None):

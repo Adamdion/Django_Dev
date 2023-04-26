@@ -68,36 +68,16 @@
       {% csrf_token %}
       <label for="file">Select a file:</label>
       <input type="file" id="file" name="file"><br><br>
-      <button type="submit" name="cashflow">Cash Flow Report</button>
+      <button type="submit" name="grossProfitMargin">Gross Profit Margin</button>
       <button type="submit" name="transactions">Transactions Report</button>
-      <button type="submit" name="sales">Sales by Product Report</button>
+      <button type="submit" name="salesByProduct">Sales by Product Report</button>
     </form>
 
-    <!-- <div class="row">
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <div class="form-group">
-          <label for="file-upload">Upload File:</label>
-          <input type="file" class="form-control-file" id="file-upload" name="file">
-        </div>
-      </form>
-      <br>
-      <br>
-      <h3>Select which report you want to see: </h3>
 
-      <div class="col-md-4">
-        <button type="submit" class="btn btn-primary">Overview</button>
-      </div>
-      <div class="col-md-4">      
-        <button type="submit" class="btn btn-primary">Sales Report</button>
-      </div>
-      <div class="col-md-4">
-        <button type="submit" name="cashflow" class="btn btn-primary">Cash Flow Report</button>
-        <!-- <a href="{% url 'easyanalytics-cashFlowReport' %}" class="btn btn-primary">cashFlowReport</a> -->
+
       </div>
     </div>
-  </div>  -->
+  </div>  
 
 
     <!-- <form method="POST" enctype="multipart/form-data">
@@ -151,10 +131,6 @@
     </div>
   </div>
     {% endif %}
-
-
-
-
 
 
 {% endblock %}
