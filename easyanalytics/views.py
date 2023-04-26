@@ -49,6 +49,7 @@ def financial(request):
         # Process the file here, e.g. save to disk, read data into DataFrame
         
         if 'grossProfitMargin' in request.POST:
+            print("GOT TO GROSS PROFIT MARGIN")
             # Render the template for cash flow report with report data
             plot1, profit_total_change = GrossProfitMargin(file)
             request.session['plot1'] = plot1
@@ -56,18 +57,18 @@ def financial(request):
             return redirect('easyanalytics-grossProfitMargin')
         
         elif 'salesByProduct' in request.POST:
+            print("GOT TO SALES BY PRODUCT")
             # Call the sales by product report function and pass in the DataFrame
             report_data = salesByProductReport(file)
             request.session['report_data'] = report_data
             return redirect('easyanalytics-salesByProduct')
            
-        
         elif 'other_report' in request.POST:
             # Call another report function and pass in the DataFrame
-            report_data = financialProcessing(file)
+            # report_data = financialProcessing(file)
             
             # Render the template for the other report with report data
-            return render(request, 'easyanalytics/other_report.html', {'report_data': report_data})
+            return render(request, 'easyanalytics/other_report.html')
         
     # Render the template for the financial page if the request is GET
     return   render(request, 'easyanalytics/financial.html', {'uploaded': uploaded})

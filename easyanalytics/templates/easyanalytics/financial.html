@@ -61,34 +61,39 @@
     <hr>
 
 
-
+   
     <p>Please upload a financial data file that contains these common columns to analyze the financial health of your company.</p>
-
-    <form method="post" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <label for="file">Select a file:</label>
-      <input type="file" id="file" name="file"><br><br>
-      <button type="submit" name="grossProfitMargin">Gross Profit Margin</button>
-      <button type="submit" name="transactions">Transactions Report</button>
-      <button type="submit" name="salesByProduct">Sales by Product Report</button>
+      <input type="file" id="file-input" name="file">
+      <br>
+      <br>
+      <button type="submit" name="grossProfitMargin" class="btn btn-primary" disabled>Gross Profit Margin</button>
+      <button type="submit" name="salesByProduct" class="btn btn-primary" disabled>Sales by Product Report</button>
+      <button type="submit" name="comingSoon" class="btn btn-primary" disabled>Coming Soon</button>
     </form>
-
-
+    
+   
+    <script>
+      const fileInput = document.getElementById('file-input');
+      const buttons = document.querySelectorAll('button[type="submit"]');
+    
+      fileInput.addEventListener('change', () => {
+        const fileSelected = fileInput.value !== '';
+        buttons.forEach((button) => {
+          if (button.name === 'comingSoon') {
+            button.disabled = true;
+          } else {
+            button.disabled = !fileSelected;
+          }
+        });
+      });
+    </script>
+    
 
       </div>
     </div>
   </div>  
-
-
-    <!-- <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      
-      <div class="form-group">
-        <label for="file-upload">Upload File:</label>
-        <input type="file" class="form-control-file" id="file-upload" name="file">
-      </div>
-      <button type="submit" class="btn btn-primary">Generate Analysis</button>
-    </form> -->
 
 
     <div class="additional-content">
