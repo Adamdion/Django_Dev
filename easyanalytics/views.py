@@ -1,15 +1,55 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import Post
+from .forms import PostForm
 from django.core.files.storage import FileSystemStorage
 from .transactionsProcessing import process_csv
 from .financialProcessing import financialProcessing, GrossProfitMargin, salesByProductReport
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse
+from django.http import JsonResponse
+# import csrf_protect 
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.contrib import messages
 
 import pandas as pd
 import plotly.express as px
+
+@login_required
+def create_post(request):
+    plot_data = request.session.get('plot_div', None)
+    # if plot_data is not None:
+    #     fig_dict1 = json.loads(plot_data)
+    #     plot1 = go.Figure(fig_dict1)
+    #     plot1 = plot1.to_html(full_html=False)
+
+    if request.method == 'POST':
+        print("IN POST")
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("IS VALID")
+            post = form.save(commit=False)
+            post.author = request.user
+            post.image = plot_data
+            post.save()
+            messages.success(request, 'Your post has been created!')
+
+            return render(request, 'easyanalytics/create_post.html', {'form': form})
+        print("NOT VALID, rendering ")
+            # return redirect('post_detail', pk=post.pk)
+        return render(request, 'easyanalytics/create_post.html', {'form': form})
+
+    else:
+        print("MADE IT TO ELSE IN CREATE POST")
+        form = PostForm(
+            initial={'image': plot_data}
+        )
+        return render(request, 'easyanalytics/create_post.html', {'form': form, 'plot_div': plot_data})
+
+
+
 
 # Create your views here.
 def home(request):
@@ -31,8 +71,7 @@ def transactions(request):
             return render(request, 'easyanalytics/transactions.html', {'error': 'No file selected'})
 
         plot_div = process_csv(file,start_date=request.POST['start_date'],end_date=request.POST['end_date'])
-
-
+        request.session['plot_div'] = plot_div  
         # Render plot image in HTML template
         return render(request, 'easyanalytics/transactions.html', {'plot_div': plot_div})
     else:

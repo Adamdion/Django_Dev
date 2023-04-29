@@ -16,24 +16,21 @@
         <br>
         <input type="submit" value="Generate plot">
       </form>
+
       {% if plot_div %}
-      <div class="mt-3">
+      <div class="mt-3" id="my-plot"> </div>
           {{ plot_div|safe }}
-          <button type="button" class="btn btn-danger mt-2" id="clear-plot-btn">Clear</button>
-        </div>
+  
+          <!-- <button type="button" class="btn btn-danger mt-2" id="clear-plot-btn">Clear</button> -->
+          <a href="{% url 'easyanalytics-create_post' %}" class="btn btn-primary mt-2">Share</a>
+
+          
         {% endif %}
       
     </div>
     
     {% block scripts %}
-    <script>
-    const clearPlotBtn = document.querySelector('#clear-plot-btn');
-    const plotContainer = document.querySelector('#plot-container');
 
-    clearPlotBtn.addEventListener('click', function () {
-        plotContainer.remove();
-    });
-    </script>
     {% endblock %}
 
 

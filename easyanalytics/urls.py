@@ -9,4 +9,6 @@ urlpatterns = [
     path('grossProfitMargin/', views.grossProfitMargin, name='easyanalytics-grossProfitMargin'),
     path('salesByProduct/', views.salesByProduct, name='easyanalytics-salesByProduct'),
     path('other/', views.other, name='easyanalytics-other'),
+    path('create_post/', views.create_post, name='easyanalytics-create_post'),
+
 ]
