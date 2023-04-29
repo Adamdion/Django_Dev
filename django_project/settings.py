@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qi*hv-=zq-n@!&k0exyh!(2k%asd+lxz7(wdu8tgfz2n--mw@u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dionadam.pythonanywhere.com']
 
 
 # Application definition
@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'easyanalytics.apps.EasyanalyticsConfig',
+    'feed.apps.FeedConfig',
     'crispy_forms',
     'crispy_bootstrap4',
     'django.contrib.admin',
