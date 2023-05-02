@@ -13,45 +13,42 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from datetime import datetime, timedelta
 
 import pandas as pd
 import plotly.express as px
 
 @login_required
 def create_post(request):
-    plot_data = request.session.get('plot_div', None)
-    # if plot_data is not None:
-    #     fig_dict1 = json.loads(plot_data)
-    #     plot1 = go.Figure(fig_dict1)
-    #     plot1 = plot1.to_html(full_html=False)
+    """Renders the create post page."""
+    # This part makes json None if it comes from a page where they didn't hit the share button.
+    if '/about' in request.META.get('HTTP_REFERER', '') or \
+       '/feed' in request.META.get('HTTP_REFERER', '') or \
+       '/profile' in request.META.get('HTTP_REFERER', '') or \
+        'http://127.0.0.1:8000/' == request.META.get('HTTP_REFERER', ''):
+        plot_data = None
+    else: 
+        plot_data = request.session.get('plot_div', None)
 
     if request.method == 'POST':
-        print("IN POST")
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            print("IS VALID")
             post = form.save(commit=False)
             post.author = request.user
             post.image = plot_data
             post.save()
             messages.success(request, 'Your post has been created!')
-
-            return render(request, 'easyanalytics/create_post.html', {'form': form})
-        print("NOT VALID, rendering ")
-            # return redirect('post_detail', pk=post.pk)
-        return render(request, 'easyanalytics/create_post.html', {'form': form})
+            return render(request, 'easyanalytics/create_post.html', {'form': form, 'plot_div': plot_data})
+        
+        return render(request, 'easyanalytics/create_post.html', {'form': form, 'plot_div': plot_data})
 
     else:
-        print("MADE IT TO ELSE IN CREATE POST")
         form = PostForm(
             initial={'image': plot_data}
         )
         return render(request, 'easyanalytics/create_post.html', {'form': form, 'plot_div': plot_data})
 
 
-
-
-# Create your views here.
 def home(request):
     """Renders the home page."""
     return render(request, 'easyanalytics/home.html', context={})
@@ -61,9 +58,10 @@ def about(request):
     return render(request, 'easyanalytics/about.html', {'title': 'About'})
 
 
-
 def transactions(request):
     """Renders the transactions page."""
+    datetime_now = datetime.now()
+
     if request.method == 'POST':
         try:
             file = request.FILES['file']
@@ -73,9 +71,9 @@ def transactions(request):
         plot_div = process_csv(file,start_date=request.POST['start_date'],end_date=request.POST['end_date'])
         request.session['plot_div'] = plot_div  
         # Render plot image in HTML template
-        return render(request, 'easyanalytics/transactions.html', {'plot_div': plot_div})
+        return render(request, 'easyanalytics/transactions.html', {'plot_div': plot_div, 'datetime_now': datetime_now})
     else:
-        return render(request, 'easyanalytics/transactions.html')
+        return render(request, 'easyanalytics/transactions.html',{'datetime_now': datetime_now})    
         
 
 
@@ -90,8 +88,8 @@ def financial(request):
         if 'grossProfitMargin' in request.POST:
             print("GOT TO GROSS PROFIT MARGIN")
             # Render the template for cash flow report with report data
-            plot1, profit_total_change = GrossProfitMargin(file)
-            request.session['plot1'] = plot1
+            plot_div, profit_total_change = GrossProfitMargin(file)
+            request.session['plot_div'] = plot_div
             request.session['profit_total_change'] = profit_total_change
             return redirect('easyanalytics-grossProfitMargin')
         
@@ -118,15 +116,13 @@ def salesByProduct(request):
     # Get the report data from the session
     report_data = request.session.get('report_data')
     plot = report_data[0]
-    fig_dict1 = json.loads(plot)
-    plot = go.Figure(fig_dict1)
-    plots = plot.to_html(full_html=False)
+    request.session['plot_div'] = plot
 
+    
     table = report_data[1]
-    fig_dict1 = json.loads(table)
-    table = go.Figure(fig_dict1)
-    table = table.to_html(full_html=False)
-    return render(request, 'easyanalytics/salesByProduct.html', context={'plots': plots, 'table': table})
+    request.session['table_div'] = table
+
+    return render(request, 'easyanalytics/salesByProduct.html', context={'plots': plot, 'table': table})
 
 
 def other(request):
@@ -138,17 +134,17 @@ def grossProfitMargin(request):
     print("GOT TO FUNCTION")
     """Renders the grossProfitMargin page."""
     # Get the plotly figure from the session
-    plot1 = request.session.get('plot1')
+    plot1 = request.session.get('plot_div')
     profit_total_change = request.session.get('profit_total_change')
     print(f"PROFIT TOTAL CHANGE: {profit_total_change}")
     # plot2 = request.session.get('plot2')
 
     # Convert the plotly figure to JSON
-    fig_dict1 = json.loads(plot1)
-    plot1 = go.Figure(fig_dict1)
-    plot1 = plot1.to_html(full_html=False)
+    # fig_dict1 = json.loads(plot1)
+    # plot1 = go.Figure(fig_dict1)
+    # plot1 = plot1.to_html(full_html=False)
 
-    return render(request, 'easyanalytics/grossProfitMargin.html', {'plot1': plot1, 'profit_total_change': profit_total_change})
+    return render(request, 'easyanalytics/grossProfitMargin.html', {'plot_div': plot1, 'profit_total_change': profit_total_change})
 
 
 

@@ -42,14 +42,29 @@
       </div>
     </div>
   </section>
+  {% if not user.is_authenticated %}
 
   <section class="cta">
     <div class="container">
 		<hr> <!-- Add horizontal line -->
-
       <h2>Ready to get started?</h2>
       <p>Sign up today and start analyzing your data with ease.</p>
       <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Sign Up Now</a>
+    </div>
+  </section>
+  {% endif %}
+
+  <hr>
+  <section class="why-us">
+    <div class="container">
+      <h2>Why Choose Easy Analytics?</h2>
+      <p>Easy Analytics is the fastest and most intuitive way to analyze your data. With a powerful suite of tools at your disposal, you'll be able to quickly generate insights and optimize your strategy.</p>
+      <ul>
+        <li><i class="fa fa-check"></i> Easy to use interface</li>
+        <li><i class="fa fa-check"></i> Powerful analytics tools</li>
+        <li><i class="fa fa-check"></i> Fast and reliable performance</li>
+        <li><i class="fa fa-check"></i> Secure and private data handling</li>
+      </ul>
     </div>
   </section>
 {% endblock %}

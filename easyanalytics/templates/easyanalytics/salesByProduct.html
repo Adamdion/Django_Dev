@@ -11,14 +11,16 @@
 
 	<h1>Sales By Product</h1>
 
-
     <div class="chart">
         {{ plots|safe }}
+        <a href="{% url 'easyanalytics-create_post' %}" class="btn btn-primary mt-2">Share</a>
       </div>
+      <br>
 
     <div class="table">
         {{ table|safe }}
-	
+        <!-- <a href="{% url 'easyanalytics-create_post' %}" class="btn btn-primary mt-2">Share</a> -->
+    </div>
 	</script>
 
 </body>

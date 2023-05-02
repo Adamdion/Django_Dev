@@ -2,6 +2,7 @@
 {% block content %}
 
 <h1>Welcome to your Feed</h1>
+<hr> 
 {% for post in posts %}
 
  <h3 class="article-title">{{ post.title }}</h3>
@@ -24,17 +25,4 @@
 
 {% endblock content %}
 
-{% block extra_css %}
-<style>
-.image-container {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .image-container img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-</style>
-  {% endblock %}
+

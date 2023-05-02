@@ -27,7 +27,6 @@ def lineChart(df):
     # Group the data by year and sum the values for each group
     # data = df.groupby(df.index.year).sum()
     
-
     # Create a line plot using Plotly
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df['Date'], y=df['Sales'],
@@ -109,8 +108,7 @@ def GrossProfitMargin(file):
                         mode='lines', name='Gross Profit Margin'))
     fig.update_layout(title='Gross Profit Margin Over Time', xaxis_title='Date',
                       yaxis_title='Gross Profit Margin')
-    fig = fig.to_json()
-  
+    fig = fig.to_html(full_html=False, include_plotlyjs='cdn')
     # Calculate total change over the year for revenue, expenses, and profit
 
     profit_initial = df.loc[0, 'Profit']
@@ -158,7 +156,7 @@ def salesByProductReport(file):
     # Return the figures as a dictionary
     # figures = {'fig_pie': fig_pie, 'fig_bar': fig_bar, 'fig_table': fig_table}
 
-    return [fig_bar.to_json(), fig_table.to_json()]
+    return [fig_bar.to_html(full_html=False, include_plotlyjs='cdn'), fig_table.to_html(full_html=False, include_plotlyjs='cdn')]
 
 
 

@@ -1,4 +1,6 @@
 {% extends "easyanalytics/base.html" %}
+{% load custom_filters %}
+
 {% block content %}
 
     <h1>Easy Analytics For Transactional Data</h1>
@@ -9,10 +11,11 @@
         <input type="file" name="file" id="file" required>
         <br>
         <label for="start_date">Start date:</label>
-        <input type="date" name="start_date" id="start_date" required>
+        <input type="date" name="start_date" id="start_date" value="{{ datetime_now|date:'Y-m-d'|subtract_days:365 }}" required>
         <br>
         <label for="end_date">End date:</label>
-        <input type="date" name="end_date" id="end_date" required>
+        <input type="date" name="end_date" id="end_date" value="{{ datetime_now|date:'Y-m-d'}}" required>
+        
         <br>
         <input type="submit" value="Generate plot">
       </form>
@@ -35,28 +38,5 @@
 
 
 
-<!-- Adding in First 5 Rows -->
-  <!-- {% if rows %}
-    <h3>First 5 Rows of Uploaded Data:</h3>
-    <table>
-      <thead>
-        <tr>
-          {% for column in rows.columns %}
-            <th>{{ column }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for _, row in rows.iterrows %}
-          <tr>
-            {% for _, value in row.iteritems %}
-              <td>{{ value }}</td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %} -->
-<!-- If plot then it shows it -->
 
 {% endblock content %}

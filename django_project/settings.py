@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-qi*hv-=zq-n@!&k0exyh!(2k%asd+lxz7(wdu8tgfz2n--mw@u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dionadam.pythonanywhere.com']
-
+# ALLOWED_HOSTS = ['dionadam.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'easyanalytics.apps.EasyanalyticsConfig',
     'feed.apps.FeedConfig',
+    'easyanalytics.templatetags.custom_filters',
     'crispy_forms',
     'crispy_bootstrap4',
     'django.contrib.admin',
@@ -68,6 +69,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'custom_filters': 'easyanalytics.templatetags.custom_filters',
+            }
         },
     },
 ]

@@ -6,5 +6,4 @@ from easyanalytics.models import Post
 # this is the view for the home page
 def home(request):
     posts = Post.objects.all().order_by('-date_posted')
-    print(f'Posts are: {posts}')
     return render(request, 'feed/home.html', context={'posts': posts})

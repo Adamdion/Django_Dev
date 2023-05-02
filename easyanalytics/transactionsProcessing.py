@@ -16,21 +16,21 @@ def process_csv(file, start_date=datetime.date.today() - datetime.timedelta(days
         df = pd.read_csv(file)
     elif file.name.endswith('.xls') or file.name.endswith('.xlsx'):
         df = pd.read_excel(file)
-
+    # Convert columns to lowercase
+    df.columns = df.columns.str.lower()
     # Get Figures
     fig1 = priceOverTime(df, start_date, end_date)
     fig2 = perItem(df, start_date, end_date)
     fig3 = perMonth(df, start_date, end_date)
     fig4 = totalSales(df, start_date, end_date)
     plot_div = formatPlots([fig1,fig2,fig3, fig4], title = "Transaction Analysis")
-    # plot_div = fig.to_html(full_html=False)
     return plot_div
 
-
+# Create a line chart showing the price over time
 def priceOverTime(df, start_date, end_date):
     """Create a line chart showing the price over time"""
     # create a line chart
-    data = [go.Scatter(x=df['Date'], y=df['Cost'])]
+    data = [go.Scatter(x=df['date'], y=df['cost'])]
     layout = go.Layout(title='Price Over Time', xaxis=dict(type='date'), yaxis={'title': 'Cost'})
     fig = go.Figure(data=data, layout=layout)
     return fig
@@ -39,30 +39,32 @@ def priceOverTime(df, start_date, end_date):
 def perItem(df, start_date, end_date):
     """Create a bar chart showing the amount spent on each item"""
     # create a new dataframe with the sum of the cost for each item
-    df2 = df.groupby('Item').sum()
+    df2 = df.groupby('item').sum()
     # create a bar chart
-    data = [go.Bar(x=df2.index, y=df2['Cost'])]
+    data = [go.Bar(x=df2.index, y=df2['cost'])]
     # add x and y axis titles
     layout = go.Layout(title='Total Cost per Item', xaxis={'title': 'Item'}, yaxis={'title': 'Total Amount'})
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+# create a bar chart showing the amount spent per month
 def perMonth(df, start_date, end_date):
     """Create a bar chart showing the amount spent per month"""
     # convert the date column to datetime
-    df['Month']=pd.to_datetime(df["Date"]).dt.month
+    df['month']=pd.to_datetime(df["date"]).dt.month
     # create a new dataframe with the sum of the cost for each month
-    df = df.groupby('Month').sum()
+    df = df.groupby('month').sum()
     # create a bar chart
-    data = [go.Bar(x=df.index, y=df['Cost'])]
+    data = [go.Bar(x=df.index, y=df['cost'])]
     layout = go.Layout(title='Total Cost per Month', xaxis={'title': 'Month'}, yaxis={'title': 'Cost'})
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+# show the total sales as a number
 def totalSales(df, start_date, end_date):
     """Show the total sales as a number"""
     # create a new dataframe with the sum of the cost for each month
-    total = df['Cost'].sum()
+    total = df['cost'].sum()
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=[0.5], y=[0.5], text=str(total), mode='text'))
